@@ -1,1 +1,41 @@
 <?php
+/**
+ * @file
+ * A module that loads up the currentStarCraft 2
+ * Grandmaster ladders with known Barcodes real identities.
+ */
+
+/**
+ * Implements hook_help().
+ *
+ * Displays help and module information.
+ *
+ * @param path
+ *   Which path of the site we're using to display help
+ * @param arg
+ *   Array that holds the current path as returned from arg() function
+ */
+function barcodes_exposed_help($path, $arg) {
+  switch ($path) {
+    case "admin/help#barcodes_exposed":
+      return '<p>' . t("Load up the current StarCraft 2 Grandmaster ladders with known Barcodes real identities.") . '</p>';
+      break;
+  }
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function barcodes_exposed_block_info() {
+  $blocks['barcodes_exposed'] = array(
+    // The name that will appear in the block list.
+    'info' => t('Barcodes Exposed')
+  );
+
+  $blocks['barcodes_exposed_alt'] = array(
+    // The name that will appear in the block list.
+    'info' => t('Barcodes Exposed Alt')
+  );
+
+  return $blocks;
+}
