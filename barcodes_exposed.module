@@ -138,3 +138,23 @@ function barcodes_exposed_form($form, &$form_state) {
 
   return system_settings_form($form);
 }
+
+/**
+ * Implements validation from the Form API
+ *
+ * @param form
+ *   A structured array containing the elements and properties of the form.
+ * @param form_state
+ *   An array that stores information about the form's current state
+ *   during processing
+ */
+function barcodes_exposed_form_validate($form, &$form_state) {
+  $block_max_num = $form_state['values']['barcodes_exposed_block_max'];
+  if (!is_numeric($block_max_num)) {
+    form_set_error('barcodes_exposed_block_max', t('You must enter a number for the maximum number
+        number of Players to display.'));
+  } elseif ($block_max_num <= 0) {
+    form_set_error('barcodes_exposed_block_max', t('Maximum number of Players to display
+        must not be positive'));
+  }
+}
