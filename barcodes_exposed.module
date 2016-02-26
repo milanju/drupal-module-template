@@ -117,6 +117,13 @@ function barcodes_exposed_menu() {
     'type' => MENU_NORMAL_ITEM
   );
 
+  $items['barcodes_exposed'] = array(
+    'title' => 'Barcodes Exposed',
+    'page callback' => '_current_posts_page',
+    'access arguments' => array('access current_posts content'),
+    'type' => MENU_NORMAL_ITEM // Will appear in Navigation menu
+  );
+
   return $items;
 }
 
@@ -157,4 +164,15 @@ function barcodes_exposed_form_validate($form, &$form_state) {
     form_set_error('barcodes_exposed_block_max', t('Maximum number of Players to display
         must not be positive'));
   }
+}
+
+/**
+ * Implements hook_permission
+ */
+function barcodes_exposed_permission() {
+  return array(
+    'access barcodes_exposed content' => array(
+      'title' => t('Access content for the Barcodes Exposed module')
+    )
+  );
 }
