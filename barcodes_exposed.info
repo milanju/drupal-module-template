@@ -1,3 +1,5 @@
 name = Barcodes Exposed
 description = Load up the current StarCraft 2 Grandmaster ladders with known Barcodes real identities.
 core = 7.x
+
+configure = admin/config/content/barcodes_exposed

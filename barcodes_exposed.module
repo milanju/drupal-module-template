@@ -57,16 +57,22 @@ function barcodes_exposed_contents() {
   // Get all posts from one week ago to the present
   $end_time = time();
 
+  $block_max_num = variable_get('barcodes_exposed_block_max', 5);
+
   // Use Database API to retrieve current posts
   $query = db_select('node', 'n')
     ->fields('n', array('nid', 'title', 'created'))
     ->condition('status', 1) // Published
     ->condition('created', array($start_time, $end_time), 'BETWEEN')
     ->orderBy('created', 'DESC') // Most recent first
+    ->range(0, $block_max_num)
     ->execute();
   return $query;
 }
 
+/**
+ * Block view of the module.
+ */
 function barcodes_exposed_block_view($delta = '') {
   switch ($delta) {
     case 'barcodes_exposed':
@@ -94,4 +100,41 @@ function barcodes_exposed_block_view($delta = '') {
       }
     return $block;
   }
+}
+
+/**
+ * Implements hook_menu.
+ */
+function barcodes_exposed_menu() {
+  $items = array();
+
+  $items['admin/config/content/barcodes_exposed'] = array(
+    'title' => 'Barcodes Exposed',
+    'description' => 'Configuration for Barcodes Exposed module',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('barcodes_exposed_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM
+  );
+
+  return $items;
+}
+
+/**
+ * Page callback: Barcodes Exposed settings.
+ *
+ * @see barcodes_exposed_menu()
+ */
+function barcodes_exposed_form($form, &$form_state) {
+  $form['barcodes_exposed_block_max'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Maximum number of Players in block view'),
+    '#default_value' => variable_get('barcodes_exposed_block_max', 5),
+    '#size' => 3,
+    '#maxlength' => 3,
+    '#description' => t('The maximum number of players to display in the block view.'),
+    '#required' => TRUE
+  );
+
+  return system_settings_form($form);
 }
