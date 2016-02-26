@@ -49,7 +49,7 @@ function barcodes_exposed_block_info() {
  * @return
  *   A result set of the targeted posts.
  */
-function barcodes_exposed_contents() {
+function barcodes_exposed_contents($display) {
   // Get today's date
   $today = getDate();
   // Calculate the date a week ago
@@ -65,8 +65,12 @@ function barcodes_exposed_contents() {
     ->condition('status', 1) // Published
     ->condition('created', array($start_time, $end_time), 'BETWEEN')
     ->orderBy('created', 'DESC') // Most recent first
-    ->range(0, $block_max_num)
     ->execute();
+
+  if ($display == 'block') {
+    $query->range(0, $block_max_num);
+  }
+
   return $query;
 }
 
@@ -79,7 +83,7 @@ function barcodes_exposed_block_view($delta = '') {
       $block['subject'] = t('Barcodes Exposed');
       if (user_access('access content')) {
         // Use our custom function to retrieve data.
-        $result = barcodes_exposed_contents();
+        $result = barcodes_exposed_contents('block');
         // Array to contain items for the block to render.
         $items = array();
         // Iterate over the result set and format as links.
