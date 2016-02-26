@@ -64,14 +64,13 @@ function barcodes_exposed_contents($display) {
     ->fields('n', array('nid', 'title', 'created'))
     ->condition('status', 1) // Published
     ->condition('created', array($start_time, $end_time), 'BETWEEN')
-    ->orderBy('created', 'DESC') // Most recent first
-    ->execute();
+    ->orderBy('created', 'DESC'); // Most recent first
 
   if ($display == 'block') {
     $query->range(0, $block_max_num);
   }
 
-  return $query;
+  return $query->execute();
 }
 
 /**
@@ -123,8 +122,8 @@ function barcodes_exposed_menu() {
 
   $items['barcodes_exposed'] = array(
     'title' => 'Barcodes Exposed',
-    'page callback' => '_current_posts_page',
-    'access arguments' => array('access current_posts content'),
+    'page callback' => '_barcodes_exposed_page',
+    'access arguments' => array('access barcodes_exposed content'),
     'type' => MENU_NORMAL_ITEM // Will appear in Navigation menu
   );
 
@@ -179,4 +178,37 @@ function barcodes_exposed_permission() {
       'title' => t('Access content for the Barcodes Exposed module')
     )
   );
+}
+
+/**
+ * Custom page callback function, declared in current_posts_menu().
+ */
+function _barcodes_exposed_page() {
+  $result = barcodes_exposed_contents('page');
+
+  // Array to contain items for the page to render.
+  $items = array();
+
+  // Iterate over the reultset and format as links.
+  foreach($result as $node) {
+    $items[] = array(
+      'data' => l($node->title, 'node/' . $node->nid)
+    );
+  }
+
+  if (empty($items)) {
+    $page_array['barcodes_exposed_arguments'] = array(
+      '#title' => t('All posts from last week'),
+      '#markup' => t('No posts available')
+    );
+    return $page_array;
+  } else {
+    $page_array['barcodes_exposed_arguments'] = array(
+      '#title' => t('All posts from the last week'),
+      '#items' => $items,
+      // Theme hook with suggestion
+      '#theme' => 'item_list__barcodes_exposed'
+    );
+    return $page_array;
+  }
 }
