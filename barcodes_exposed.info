@@ -3,3 +3,5 @@ description = Load up the current StarCraft 2 Grandmaster ladders with known Bar
 core = 7.x
 
 configure = admin/config/content/barcodes_exposed
+
+files[] = barcodes_exposed.test

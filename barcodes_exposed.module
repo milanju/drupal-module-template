@@ -97,8 +97,19 @@ function barcodes_exposed_block_view($delta = '') {
           $block['content'] = t('No posts available');
         } else {
           // Pass data through theme function
-          $block['content'] = theme('item_list', array(
-            'items' => $items));
+          // $block['content'] = theme('item_list', array(
+          //   'items' => $items));
+          $block['content']['posts'] = array(
+            '#theme' => 'item_list__barcodes_exposed__block',
+            '#items' => $items
+          );
+
+          // Add a link to the page for more entries.
+          $block['content']['more'] = array(
+            '#theme' => 'more_link__barcodes_exposed',
+            '#url' => 'barcodes_exposed',
+            '#title' => t('See the full list of current posts.')
+          );
         }
       }
     return $block;
@@ -184,6 +195,8 @@ function barcodes_exposed_permission() {
  * Custom page callback function, declared in current_posts_menu().
  */
 function _barcodes_exposed_page() {
+  drupal_set_title('Barcodes Exposed');
+
   $result = barcodes_exposed_contents('page');
 
   // Array to contain items for the page to render.
